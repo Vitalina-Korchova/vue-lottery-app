@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div id="containerRegisterForm" class="py-3 px-3 bg-white border border-light-subtle">
+  <div id="containerRegisterForm" class="py-3 px-3 mb-4 bg-white border border-light-subtle">
     <form class="d-flex flex-column gap-2">
       <span class="fw-bold">REGISTER FORM</span>
       <span class="text-black-50 bg-white fs-6 pb-3">Please fill in all the fields.</span>
