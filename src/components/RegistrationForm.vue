@@ -35,6 +35,8 @@ const saveParticipant = (event: Event) => {
 
   console.log('Поточний список учасників:', participants.value)
 }
+
+const validation = (input: string, error: string) => {}
 </script>
 
 <template>
@@ -51,6 +53,7 @@ const saveParticipant = (event: Event) => {
         placeholder="Enter user name"
         class="form-control"
       />
+      <p></p>
       <label for="" class="fw-bold">Date of Birth</label>
       <input
         v-model="participant.dateBirth"
@@ -59,6 +62,7 @@ const saveParticipant = (event: Event) => {
         id="dateBirth"
         class="form-control"
       />
+      <p></p>
       <label for="" class="fw-bold">Email</label>
       <input
         v-model="participant.email"
@@ -67,6 +71,7 @@ const saveParticipant = (event: Event) => {
         class="form-control"
         placeholder="Enter email"
       />
+      <p></p>
       <label for="" class="fw-bold">Phone Number</label>
       <input
         v-model="participant.phoneNumber"
@@ -75,6 +80,7 @@ const saveParticipant = (event: Event) => {
         class="form-control"
         placeholder="Enter phone number"
       />
+      <p></p>
       <button
         @click="saveParticipant"
         id="btnSave"

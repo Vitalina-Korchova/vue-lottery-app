@@ -34,16 +34,16 @@ const addParticipant = (newParticipant: Participant) => {
       <div
         v-for="(participant, index) in participants"
         :key="index"
-        class="d-flex flex-row justify-content-between fs-6 mb-3"
+        class="d-flex flex-row fs-6 mb-3"
       >
         <div id="NamesParticipants">
           <span>{{ index + 1 }}</span>
           <span class="mx-5">{{ participant.name }}</span>
         </div>
-        <div id="ParticipantsEmailPhone" class="d-flex flex-row">
-          <span class="element">{{ participant.dateBirth }}</span>
-          <span class="element">{{ participant.email }}</span>
-          <span class="element"> {{ participant.phoneNumber }}</span>
+        <div id="ParticipantsEmailPhone">
+          <span>{{ participant.dateBirth }}</span>
+          <span>{{ participant.email }}</span>
+          <span>{{ participant.phoneNumber }}</span>
         </div>
       </div>
     </div>
@@ -51,10 +51,18 @@ const addParticipant = (newParticipant: Participant) => {
 </template>
 
 <style scoped>
-#DateEmailPhone {
-  margin-left: 270px;
+#ParticipantsEmailPhone span:first-child {
+  position: absolute;
+  left: 625px;
 }
 
-.element {
+#ParticipantsEmailPhone span:last-child {
+  position: absolute;
+  left: 1010px;
+}
+
+#ParticipantsEmailPhone span:nth-of-type(2) {
+  position: absolute;
+  left: 760px;
 }
 </style>
