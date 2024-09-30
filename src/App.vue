@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import WinnerBlock from './components/WinnersBlock.vue'
-import RegisterForm from './components/RegistrationForm.vue'
 import ListParticipants from './components/ListParticipantsBlock.vue'
 </script>
 
@@ -8,7 +7,6 @@ import ListParticipants from './components/ListParticipantsBlock.vue'
   <body>
     <div class="container">
       <WinnerBlock />
-      <RegisterForm />
       <ListParticipants />
     </div>
   </body>
