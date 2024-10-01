@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import RegistrationForm from './RegistrationForm.vue'
+import type { PropType } from 'vue'
 import type { Participant } from './RegistrationForm.vue'
 
-//масив
-const participants = ref<Participant[]>([])
-
-// Метод для оновлення списку учасників
-const addParticipant = (newParticipant: Participant) => {
-  participants.value.push(newParticipant)
-}
+defineProps({
+  participants: {
+    type: Array as PropType<Participant[]>,
+    required: true
+  }
+})
 </script>
 
 <template>
-  <RegistrationForm @add-participant="addParticipant" />
   <div
     id="containerParticipants"
     class="d-flex flex-column py-5 px-4 mb-5 bg-white border border-light-subtle"

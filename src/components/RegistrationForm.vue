@@ -16,6 +16,9 @@ const participant = reactive<Participant>({
 })
 
 const participants = ref<Participant[]>([])
+
+console.log('Поточний список учасників:', participants.value)
+
 const errors = reactive<{ [key: string]: string }>({
   name: '',
   dateBirth: '',
@@ -80,8 +83,6 @@ const saveParticipant = (event: Event) => {
 
   // Викликаємо подію, передаючи нового учасника
   emit('add-participant', newParticipant)
-
-  console.log('Поточний список учасників:', participants.value)
 }
 </script>
 
