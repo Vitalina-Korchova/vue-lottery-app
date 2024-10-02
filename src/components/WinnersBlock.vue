@@ -15,7 +15,7 @@ const winners = ref<Participant[]>([])
 const isButtonDisabled = ref(true)
 
 const checkParticipants = () => {
-  isButtonDisabled.value = props.participants.length < 4
+  isButtonDisabled.value = props.participants.length === 0 || winners.value.length >= 3
 }
 
 //перевірка при завантаженні дом
@@ -33,14 +33,31 @@ watch(
 )
 
 const selectWinners = () => {
-  const shuffled = [...props.participants].sort(() => 0.5 - Math.random())
-  winners.value = shuffled.slice(0, 3)
+  if (winners.value.length < 3) {
+    // Перемішуємо учасників
+    const shuffledParticipants = [...props.participants].sort(() => Math.random() - 0.5)
 
-  // Виведення імен переможців у консоль
-  console.log('Winners:')
-  winners.value.forEach((winner, index) => {
-    console.log(`${index + 1}. ${winner.name}`)
-  })
+    const newWinner = shuffledParticipants.find(
+      (participant) => !winners.value.some((winner) => winner.name === participant.name)
+    )
+
+    // Якщо є учасник, якого ще немає серед переможців, додаємо його
+    if (newWinner) {
+      winners.value.push(newWinner)
+
+      console.log(
+        'Winners:',
+        winners.value.map((winner) => winner.name)
+      )
+
+      checkParticipants()
+    }
+  }
+}
+
+const removeWinner = (index: number) => {
+  winners.value.splice(index, 1)
+  checkParticipants()
 }
 </script>
 
@@ -50,9 +67,15 @@ const selectWinners = () => {
     class="d-flex justify-content-between bg-white px-4 py-3 mt-5 mb-4 border border-light-subtle align-items-center"
   >
     <div id="fieldForWinners" class="d-flex border border-light-subtle align-items-center">
-      <!-- <span class="winners mx-2 px-2 text-bg-primary" id="winner1"></span>
-      <span class="winners mx-2 px-2 text-bg-primary" id="winner2"></span>
-      <span class="winners mx-2 px-2 text-bg-primary" id="winner3"></span> -->
+      <span
+        v-for="(winner, index) in winners"
+        :key="index"
+        class="winners mx-2 ps-2 pe-4 text-bg-primary"
+        :id="'winner' + (index + 1)"
+      >
+        {{ winner.name }}
+        <span class="close-btn" @click="removeWinner(index)">&#10005;</span>
+      </span>
       <span class="fs-6 px-4 py-2 text-secondary">Winners</span>
     </div>
     <button
@@ -76,5 +99,15 @@ const selectWinners = () => {
   border-radius: 2px;
   font-weight: 600;
   font-size: 14px;
+}
+
+.close-btn {
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  top: 75px;
+  font-weight: bold;
+  padding-left: 6px;
 }
 </style>
