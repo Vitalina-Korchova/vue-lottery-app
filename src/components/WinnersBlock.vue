@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from 'vue'
 import type { PropType } from 'vue'
 import type { Participant } from './RegistrationForm.vue'
+import UButton from './UButton.vue'
 
 const props = defineProps({
   participants: {
@@ -78,15 +79,7 @@ const removeWinner = (index: number) => {
       </span>
       <span class="fs-6 px-4 py-2 text-secondary">Winners</span>
     </div>
-    <button
-      id="btnNewWinners"
-      type="button"
-      class="btn btn-primary"
-      :disabled="isButtonDisabled"
-      @click="selectWinners"
-    >
-      New Winner
-    </button>
+    <UButton label="New Winner" :disabled="isButtonDisabled" @click="selectWinners" />
   </div>
 </template>
 
@@ -106,7 +99,7 @@ const removeWinner = (index: number) => {
   color: white;
   cursor: pointer;
   position: absolute;
-  top: 75px;
+  top: 80px;
   font-weight: bold;
   padding-left: 6px;
 }

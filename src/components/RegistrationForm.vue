@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref, defineEmits } from 'vue'
+import UButton from './UButton.vue'
+import UInput from './UInput.vue'
 
 export interface Participant {
   name: string
@@ -26,7 +28,7 @@ const errors = reactive<{ [key: string]: string }>({
   phoneNumber: ''
 })
 
-// Використовуємо defineEmits для визначення події
+// Використовую defineEmits для визначення події
 const emit = defineEmits(['add-participant'])
 
 // Функція для перевірки кожного поля на порожність
@@ -94,13 +96,13 @@ const saveParticipant = (event: Event) => {
 
       <!-- Поле для імені з валідацією -->
       <label for="name" class="fw-bold">Name</label>
-      <input
+      <UInput
         v-model="participant.name"
-        :class="{ 'is-invalid': errors.name }"
-        type="text"
-        id="name"
-        placeholder="Enter user name"
-        class="form-control"
+        :id="'name'"
+        :type="'text'"
+        :placeholder="'Enter user name'"
+        :className="'form-control'"
+        :error="errors.name"
       />
       <p v-if="errors.name" class="text-danger">{{ errors.name }}</p>
 
@@ -139,14 +141,7 @@ const saveParticipant = (event: Event) => {
       />
       <p v-if="errors.phoneNumber" class="text-danger">{{ errors.phoneNumber }}</p>
 
-      <button
-        @click="saveParticipant"
-        id="btnSave"
-        type="button"
-        class="mt-4 btn btn-primary align-self-end"
-      >
-        Save
-      </button>
+      <UButton label="Save" @click="saveParticipant" id="btnSave" customClass="align-self-end" />
     </form>
   </div>
 </template>
