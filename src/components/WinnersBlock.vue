@@ -34,14 +34,14 @@ watch(
 
 const selectWinners = () => {
   if (winners.value.length < 3) {
-    // Перемішуємо учасників
+    // перемішуємо учасників
     const shuffledParticipants = [...props.participants].sort(() => Math.random() - 0.5)
 
     const newWinner = shuffledParticipants.find(
       (participant) => !winners.value.some((winner) => winner.name === participant.name)
     )
 
-    // Якщо є учасник, якого ще немає серед переможців, додаємо його
+    // якщо є учасник, якого ще немає серед переможців, додаємо його
     if (newWinner) {
       winners.value.push(newWinner)
 
