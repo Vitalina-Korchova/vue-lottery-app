@@ -95,7 +95,6 @@ const saveParticipant = (event: Event) => {
       <span class="text-black-50 bg-white fs-6 pb-3">Please fill in all the fields.</span>
 
       <!-- Поле для імені з валідацією -->
-      <label for="name" class="fw-bold">Name</label>
       <UInput
         v-model="participant.name"
         :id="'name'"
@@ -103,43 +102,41 @@ const saveParticipant = (event: Event) => {
         :placeholder="'Enter user name'"
         :className="'form-control'"
         :error="errors.name"
+        :label="'Name'"
       />
-      <p v-if="errors.name" class="text-danger">{{ errors.name }}</p>
 
       <!-- Поле для дати народження -->
-      <label for="dateBirth" class="fw-bold">Date of Birth</label>
-      <input
+      <UInput
         v-model="participant.dateBirth"
-        :class="{ 'is-invalid': errors.dateBirth }"
-        type="date"
-        id="dateBirth"
-        class="form-control"
+        :id="'dateBirth'"
+        :type="'date'"
+        :className="'form-control'"
+        :error="errors.dateBirth"
+        :label="'Date of Birth'"
       />
-      <p v-if="errors.dateBirth" class="text-danger">{{ errors.dateBirth }}</p>
 
       <!-- Поле для email -->
-      <label for="email" class="fw-bold">Email</label>
-      <input
+
+      <UInput
         v-model="participant.email"
-        :class="{ 'is-invalid': errors.email }"
-        type="email"
-        id="email"
-        placeholder="Enter email"
-        class="form-control"
+        :id="'email'"
+        :type="'email'"
+        :className="'form-control'"
+        :placeholder="'Enter email'"
+        :error="errors.email"
+        :label="'Email'"
       />
-      <p v-if="errors.email" class="text-danger">{{ errors.email }}</p>
 
       <!-- Поле для телефону -->
-      <label for="phoneNumber" class="fw-bold">Phone Number</label>
-      <input
+      <UInput
         v-model="participant.phoneNumber"
-        :class="{ 'is-invalid': errors.phoneNumber }"
-        type="text"
-        id="phoneNumber"
-        placeholder="Enter phone number"
-        class="form-control"
+        :id="'phoneNumber'"
+        :type="'tel'"
+        :className="'form-control'"
+        :placeholder="'Enter phone number'"
+        :error="errors.phoneNumber"
+        :label="'Phone Number'"
       />
-      <p v-if="errors.phoneNumber" class="text-danger">{{ errors.phoneNumber }}</p>
 
       <UButton label="Save" @click="saveParticipant" id="btnSave" customClass="align-self-end" />
     </form>
@@ -149,13 +146,5 @@ const saveParticipant = (event: Event) => {
 <style scoped>
 #btnSave {
   width: 80px;
-}
-
-.is-invalid {
-  border-color: red;
-}
-
-.text-danger {
-  font-size: 14px;
 }
 </style>

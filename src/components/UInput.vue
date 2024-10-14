@@ -2,6 +2,7 @@
 import { defineProps, computed } from 'vue'
 
 const props = defineProps<{
+  label?: string
   modelValue: string // пропс для v-model
   id: string
   type?: string
@@ -19,6 +20,7 @@ const inputValue = computed({
 </script>
 
 <template>
+  <label v-if="label" :for="id" class="fw-bold">{{ label }}</label>
   <input
     v-model="inputValue"
     :id="id"
@@ -27,10 +29,15 @@ const inputValue = computed({
     :class="[className, { 'is-invalid': error }]"
     @input="$emit('update:modelValue', inputValue)"
   />
+  <p v-if="error" class="text-danger">{{ error }}</p>
 </template>
 
 <style scoped>
 .is-invalid {
   border-color: red;
+}
+
+.text-danger {
+  font-size: 14px;
 }
 </style>
