@@ -4,6 +4,7 @@ import UButton from './UButton.vue'
 import UInput from './UInput.vue'
 
 export interface Participant {
+  id: number
   name: string
   dateBirth: string
   email: string
@@ -11,6 +12,7 @@ export interface Participant {
 }
 
 const participant = reactive<Participant>({
+  id: 0,
   name: '',
   dateBirth: '',
   email: '',
@@ -67,6 +69,8 @@ const validateAllFields = () => {
   return !(errors.name || errors.dateBirth || errors.email || errors.phoneNumber)
 }
 
+const participantIdCounter = ref(1)
+
 const saveParticipant = (event: Event) => {
   event.preventDefault()
 
@@ -75,7 +79,7 @@ const saveParticipant = (event: Event) => {
     return
   }
 
-  const newParticipant = { ...participant }
+  const newParticipant = { ...participant, id: participantIdCounter.value++ }
   participants.value.push(newParticipant)
 
   // Очищуємо поля форми

@@ -5,8 +5,6 @@ const props = defineProps<{
   columns: Array<string>
   rows: Array<Record<string, any>>
 }>()
-
-const emit = defineEmits(['updateRow', 'removeRow'])
 </script>
 
 <template>
@@ -17,8 +15,7 @@ const emit = defineEmits(['updateRow', 'removeRow'])
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(row, index) in rows" :key="index">
-        <th scope="row">{{ index + 1 }}</th>
+      <tr v-for="row in rows" :key="row.id">
         <td v-for="(value, key) in row" :key="key">{{ value }}</td>
         <td>
           <slot name="update-button" :row="row"></slot>
