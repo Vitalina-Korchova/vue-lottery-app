@@ -5,7 +5,8 @@ import UButton from './UButton.vue'
 import UTable from './ListTable.vue'
 import UModal from './UModal.vue'
 import UInput from './UInput.vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch, computed } from 'vue'
+import SearchBar from './SearchBar.vue'
 
 const props = defineProps({
   participants: {
@@ -29,14 +30,19 @@ const participant = reactive<Participant>({
   phoneNumber: ''
 })
 
-const emit = defineEmits(['remove-participant', 'update-participant'])
+const emit = defineEmits(['remove-participant', 'update-participant', 'search-by-name'])
 
 //для відкриття модального вікна
 const selectedParticipantId = ref<number | null>(null)
 const isRemoveModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
+const selectedParticipantName = ref<string>('')
 
 const openRemoveModal = (participantId: number) => {
+  const participantToRemove = props.participants.find((p) => p.id === participantId)
+  if (participantToRemove) {
+    selectedParticipantName.value = participantToRemove.name
+  }
   selectedParticipantId.value = participantId
   isRemoveModalVisible.value = true
 }
@@ -105,10 +111,15 @@ const UpdateParticipant = () => {
     closeModal()
   }
 }
+
+const filterByName = (name: string) => {
+  emit('search-by-name', name)
+}
 </script>
 
 <template>
   <div id="containerParticipants" class="py-5 px-4 mb-5 bg-white border border-light-subtle">
+    <SearchBar :participants="participants" @filter-by-name="filterByName" />
     <UTable
       :columns="['ID', 'Name', 'Date of Birth', 'Email', 'Phone Number', 'Update', 'Remove']"
       :rows="participants"
@@ -125,7 +136,7 @@ const UpdateParticipant = () => {
       v-if="isRemoveModalVisible"
       :isModalVisible="isRemoveModalVisible"
       title="Confirm Removal"
-      text="Are you sure you want to remove participant?"
+      :text="`Are you sure you want to remove participant ${selectedParticipantName}?`"
       buttonClose=""
       buttonOneText="Cancel"
       buttonTwoText="Confirm"

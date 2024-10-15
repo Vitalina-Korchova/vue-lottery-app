@@ -21,8 +21,6 @@ const participant = reactive<Participant>({
 
 const participants = ref<Participant[]>([])
 
-console.log('Поточний список учасників:', participants.value)
-
 const errors = reactive<{ [key: string]: string }>({
   name: '',
   dateBirth: '',
@@ -54,6 +52,8 @@ const validateAllFields = () => {
     errors.email = 'Email is required!'
   } else if (!emailRegex.test(participant.email)) {
     errors.email = 'Invalid email format!'
+  } else if (participants.value.some((p) => p.email === participant.email)) {
+    errors.email = 'This email already exists!'
   } else {
     errors.email = ''
   }
