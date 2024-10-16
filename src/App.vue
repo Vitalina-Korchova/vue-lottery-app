@@ -49,17 +49,22 @@ const updateParticipant = (updatedParticipant: Participant) => {
 const searchParticipants = (query: string) => {
   searchTerm.value = query
 }
+
+const sortParticipantsByNameDec = () => {
+  participants.value.sort((a, b) => a.name.localeCompare(b.name))
+}
 </script>
 
 <template>
   <div class="container">
     <WinnerBlock :participants="participants" />
-    <RegistrationForm @add-participant="addParticipant" />
+    <RegistrationForm @add-participant="addParticipant" :participants="participants" />
     <ListParticipants
       :participants="filteredParticipants"
       @remove-participant="removeParticipant"
       @update-participant="updateParticipant"
       @search-by-name="searchParticipants"
+      @sort-name-dec="sortParticipantsByNameDec"
     />
   </div>
 </template>

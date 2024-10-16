@@ -30,7 +30,12 @@ const participant = reactive<Participant>({
   phoneNumber: ''
 })
 
-const emit = defineEmits(['remove-participant', 'update-participant', 'search-by-name'])
+const emit = defineEmits([
+  'remove-participant',
+  'update-participant',
+  'search-by-name',
+  'sort-name-dec'
+])
 
 //для відкриття модального вікна
 const selectedParticipantId = ref<number | null>(null)
@@ -90,6 +95,8 @@ const validateAllFields = () => {
     errors.email = 'Email is required!'
   } else if (!emailRegex.test(participant.email)) {
     errors.email = 'Invalid email format!'
+  } else if (props.participants.some((p) => p.email === participant.email)) {
+    errors.email = 'This email already exists!'
   } else {
     errors.email = ''
   }
@@ -115,11 +122,22 @@ const UpdateParticipant = () => {
 const filterByName = (name: string) => {
   emit('search-by-name', name)
 }
+
+const sortNameDec = () => {
+  emit('sort-name-dec', participant)
+}
 </script>
 
 <template>
   <div id="containerParticipants" class="py-5 px-4 mb-5 bg-white border border-light-subtle">
     <SearchBar :participants="participants" @filter-by-name="filterByName" />
+    <label id="labelSort" class="fs-5 fw-bold">Сортування за іменем</label>
+    <UButton id="sortDec" customClass="btn-primary" icon="sortNameDec" @click="sortNameDec" />
+    <UButton customClass="btn-primary" icon="sortNameInc" />
+    <br />
+    <label id="labelSort" class="fs-5 fw-bold">Сортування за датою народження</label>
+    <UButton id="sortDec" customClass="btn-primary" icon="sortDateBirthDec" />
+    <UButton customClass="btn-primary" icon="sortDateBirthInc" />
     <UTable
       :columns="['ID', 'Name', 'Date of Birth', 'Email', 'Phone Number', 'Update', 'Remove']"
       :rows="participants"
@@ -198,4 +216,12 @@ const filterByName = (name: string) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#labelSort {
+  margin-right: 10px;
+}
+
+#sortDec {
+  margin-right: 10px;
+}
+</style>

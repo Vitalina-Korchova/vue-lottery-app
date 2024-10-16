@@ -19,7 +19,7 @@ const participant = reactive<Participant>({
   phoneNumber: ''
 })
 
-const participants = ref<Participant[]>([])
+const propsParticipants = defineProps<{ participants: Participant[] }>()
 
 const errors = reactive<{ [key: string]: string }>({
   name: '',
@@ -31,7 +31,8 @@ const errors = reactive<{ [key: string]: string }>({
 // Використовую defineEmits для визначення події
 const emit = defineEmits(['add-participant'])
 
-// Функція для перевірки кожного поля на порожність
+const participantIdCounter = ref(1)
+
 const validateAllFields = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const phoneRegex = /^0\d{9}$/
@@ -52,7 +53,7 @@ const validateAllFields = () => {
     errors.email = 'Email is required!'
   } else if (!emailRegex.test(participant.email)) {
     errors.email = 'Invalid email format!'
-  } else if (participants.value.some((p) => p.email === participant.email)) {
+  } else if (propsParticipants.participants.some((p) => p.email === participant.email)) {
     errors.email = 'This email already exists!'
   } else {
     errors.email = ''
@@ -69,8 +70,6 @@ const validateAllFields = () => {
   return !(errors.name || errors.dateBirth || errors.email || errors.phoneNumber)
 }
 
-const participantIdCounter = ref(1)
-
 const saveParticipant = (event: Event) => {
   event.preventDefault()
 
@@ -80,7 +79,6 @@ const saveParticipant = (event: Event) => {
   }
 
   const newParticipant = { ...participant, id: participantIdCounter.value++ }
-  participants.value.push(newParticipant)
 
   // Очищуємо поля форми
   Object.keys(participant).forEach((key) => {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
+import Ubutton from './UButton.vue'
 
 const props = defineProps<{
   title: string
@@ -19,32 +20,24 @@ const emit = defineEmits(['close', 'buttonOneClick', 'buttonTwoClick'])
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ title }}</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-            @click="$emit('close')"
-          >
-            {{ buttonClose }}
-          </button>
+          <Ubutton :label="buttonClose" customClass="btn-close" @click="$emit('close')" />
         </div>
         <div class="modal-body">
           <p>{{ text }}</p>
           <slot name="modal-inputs"></slot>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="$emit('buttonOneClick')">
-            {{ buttonOneText }}
-          </button>
-          <button
+          <Ubutton
+            :label="buttonOneText"
+            customClass="btn-secondary"
+            @click="$emit('buttonOneClick')"
+          />
+          <Ubutton
             v-if="buttonTwoText"
-            type="button"
-            class="btn btn-primary"
+            :label="buttonTwoText"
+            customClass="btn-primary"
             @click="$emit('buttonTwoClick')"
-          >
-            {{ buttonTwoText }}
-          </button>
+          />
         </div>
       </div>
     </div>
