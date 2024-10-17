@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, onMounted, onBeforeUnmount } from 'vue'
 import Ubutton from './UButton.vue'
 
 const props = defineProps<{
@@ -12,6 +12,24 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['close', 'buttonOneClick', 'buttonTwoClick'])
+
+const closeModal = () => {
+  emit('close')
+}
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    closeModal()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyDown)
+})
 </script>
 
 <template>
@@ -20,7 +38,7 @@ const emit = defineEmits(['close', 'buttonOneClick', 'buttonTwoClick'])
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ title }}</h5>
-          <Ubutton :label="buttonClose" customClass="btn-close" @click="$emit('close')" />
+          <Ubutton :label="buttonClose" customClass="btn-close" @click="closeModal" />
         </div>
         <div class="modal-body">
           <p>{{ text }}</p>

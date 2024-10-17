@@ -34,7 +34,10 @@ const emit = defineEmits([
   'remove-participant',
   'update-participant',
   'search-by-name',
-  'sort-name-dec'
+  'sort-name-dec',
+  'sort-name-inc',
+  'sort-date-birth-dec',
+  'sort-date-birth-inc'
 ])
 
 //для відкриття модального вікна
@@ -42,6 +45,7 @@ const selectedParticipantId = ref<number | null>(null)
 const isRemoveModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
 const selectedParticipantName = ref<string>('')
+const originalEmail = ref<string>('')
 
 const openRemoveModal = (participantId: number) => {
   const participantToRemove = props.participants.find((p) => p.id === participantId)
@@ -56,6 +60,7 @@ const openUpdateModal = (participantId: number) => {
   const participantToUpdate = props.participants.find((p) => p.id === participantId)
   if (participantToUpdate) {
     Object.assign(participant, participantToUpdate)
+    originalEmail.value = participant.email
   }
   selectedParticipantId.value = participantId
   isUpdateModalVisible.value = true
@@ -95,7 +100,10 @@ const validateAllFields = () => {
     errors.email = 'Email is required!'
   } else if (!emailRegex.test(participant.email)) {
     errors.email = 'Invalid email format!'
-  } else if (props.participants.some((p) => p.email === participant.email)) {
+  } else if (
+    participant.email !== originalEmail.value &&
+    props.participants.some((p) => p.email === participant.email)
+  ) {
     errors.email = 'This email already exists!'
   } else {
     errors.email = ''
@@ -126,6 +134,18 @@ const filterByName = (name: string) => {
 const sortNameDec = () => {
   emit('sort-name-dec', participant)
 }
+
+const sortNameInc = () => {
+  emit('sort-name-inc', participant)
+}
+
+const sortDateBirthdec = () => {
+  emit('sort-date-birth-dec', participant)
+}
+
+const sortDateBirthInc = () => {
+  emit('sort-date-birth-inc', participant)
+}
 </script>
 
 <template>
@@ -133,11 +153,16 @@ const sortNameDec = () => {
     <SearchBar :participants="participants" @filter-by-name="filterByName" />
     <label id="labelSort" class="fs-5 fw-bold">Сортування за іменем</label>
     <UButton id="sortDec" customClass="btn-primary" icon="sortNameDec" @click="sortNameDec" />
-    <UButton customClass="btn-primary" icon="sortNameInc" />
+    <UButton customClass="btn-primary" icon="sortNameInc" @click="sortNameInc" />
     <br />
     <label id="labelSort" class="fs-5 fw-bold">Сортування за датою народження</label>
-    <UButton id="sortDec" customClass="btn-primary" icon="sortDateBirthDec" />
-    <UButton customClass="btn-primary" icon="sortDateBirthInc" />
+    <UButton
+      id="sortDec"
+      customClass="btn-primary"
+      icon="sortDateBirthDec"
+      @click="sortDateBirthdec"
+    />
+    <UButton customClass="btn-primary" icon="sortDateBirthInc" @click="sortDateBirthInc" />
     <UTable
       :columns="['ID', 'Name', 'Date of Birth', 'Email', 'Phone Number', 'Update', 'Remove']"
       :rows="participants"

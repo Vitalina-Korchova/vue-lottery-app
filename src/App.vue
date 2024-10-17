@@ -6,18 +6,26 @@ import RegistrationForm from './components/RegistrationForm.vue'
 import type { Participant } from './components/RegistrationForm.vue'
 
 const participants = ref<Participant[]>([])
+const displayedParticipants = ref<Participant[]>([])
 const searchTerm = ref('')
+const currentSortType = ref<'none' | 'nameDec' | 'nameInc' | 'dateBirthDec' | 'dateBirthInc'>(
+  'none'
+)
 
 const filteredParticipants = computed(() => {
-  return participants.value.filter((p) =>
-    p.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
+  if (searchTerm.value) {
+    return displayedParticipants.value.filter((p) =>
+      p.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+    )
+  }
+  return displayedParticipants.value
 })
 
 const loadFromStorage = () => {
   const storedParticipants = localStorage.getItem('participants')
   if (storedParticipants) {
     participants.value = JSON.parse(storedParticipants)
+    resetDisplay()
   }
 }
 
@@ -25,9 +33,24 @@ const saveToStorage = () => {
   localStorage.setItem('participants', JSON.stringify(participants.value))
 }
 
-onMounted(loadFromStorage)
+const resetDisplay = () => {
+  displayedParticipants.value = [...participants.value]
+  searchTerm.value = ''
+  currentSortType.value = 'none'
+}
 
-watch(participants, saveToStorage, { deep: true })
+onMounted(() => {
+  loadFromStorage()
+})
+
+watch(
+  participants,
+  () => {
+    saveToStorage()
+    resetDisplay()
+  },
+  { deep: true }
+)
 
 const addParticipant = (newParticipant: Participant) => {
   const maxId = Math.max(0, ...participants.value.map((p) => p.id))
@@ -51,7 +74,43 @@ const searchParticipants = (query: string) => {
 }
 
 const sortParticipantsByNameDec = () => {
-  participants.value.sort((a, b) => a.name.localeCompare(b.name))
+  if (currentSortType.value !== 'dateBirthDec') {
+    displayedParticipants.value.sort((a, b) => a.name.localeCompare(b.name))
+    currentSortType.value = 'dateBirthDec'
+  } else {
+    resetDisplay()
+  }
+}
+
+const sortParticipantsByNameInc = () => {
+  if (currentSortType.value !== 'nameInc') {
+    displayedParticipants.value.sort((a, b) => b.name.localeCompare(a.name))
+    currentSortType.value = 'nameInc'
+  } else {
+    resetDisplay()
+  }
+}
+
+const sortParticipantsByDateBirthDec = () => {
+  if (currentSortType.value !== 'dateBirthDec') {
+    displayedParticipants.value.sort((a, b) => {
+      return new Date(b.dateBirth).getTime() - new Date(a.dateBirth).getTime()
+    })
+    currentSortType.value = 'dateBirthDec'
+  } else {
+    resetDisplay()
+  }
+}
+
+const sortParticipantsByDateBirthInc = () => {
+  if (currentSortType.value !== 'dateBirthInc') {
+    displayedParticipants.value.sort((a, b) => {
+      return new Date(a.dateBirth).getTime() - new Date(b.dateBirth).getTime()
+    })
+    currentSortType.value = 'dateBirthInc'
+  } else {
+    resetDisplay()
+  }
 }
 </script>
 
@@ -65,6 +124,9 @@ const sortParticipantsByNameDec = () => {
       @update-participant="updateParticipant"
       @search-by-name="searchParticipants"
       @sort-name-dec="sortParticipantsByNameDec"
+      @sort-name-inc="sortParticipantsByNameInc"
+      @sort-date-birth-dec="sortParticipantsByDateBirthDec"
+      @sort-date-birth-inc="sortParticipantsByDateBirthInc"
     />
   </div>
 </template>
