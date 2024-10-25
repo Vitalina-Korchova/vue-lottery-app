@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import type { Participant } from './RegistrationForm.vue'
+import type { Participant } from '../ParticipantInterface'
 import UButton from './UButton.vue'
 import UTable from './ListTable.vue'
 import UModal from './UModal.vue'
 import UInput from './UInput.vue'
-import { ref, reactive, watch, computed } from 'vue'
+import { ref, reactive } from 'vue'
 import SearchBar from './SearchBar.vue'
+import type ParticipantService from '../ParticipantService'
 
 const props = defineProps({
   participants: {
     type: Array as PropType<Participant[]>,
+    required: true
+  },
+  participantService: {
+    type: Object as PropType<ParticipantService>,
     required: true
   }
 })
@@ -29,16 +34,6 @@ const participant = reactive<Participant>({
   email: '',
   phoneNumber: ''
 })
-
-const emit = defineEmits([
-  'remove-participant',
-  'update-participant',
-  'search-by-name',
-  'sort-name-dec',
-  'sort-name-inc',
-  'sort-date-birth-dec',
-  'sort-date-birth-inc'
-])
 
 //для відкриття модального вікна
 const selectedParticipantId = ref<number | null>(null)
@@ -69,7 +64,7 @@ const openUpdateModal = (participantId: number) => {
 // Метод для видалення учасника
 const confirmRemoval = () => {
   if (selectedParticipantId.value !== null) {
-    emit('remove-participant', selectedParticipantId.value)
+    props.participantService.removeParticipant(selectedParticipantId.value)
     isRemoveModalVisible.value = false
   }
 }
@@ -122,29 +117,29 @@ const validateAllFields = () => {
 
 const UpdateParticipant = () => {
   if (validateAllFields()) {
-    emit('update-participant', participant)
+    props.participantService.updateParticipant(participant)
     closeModal()
   }
 }
 
 const filterByName = (name: string) => {
-  emit('search-by-name', name)
+  props.participantService.searchParticipants(name)
 }
 
 const sortNameDec = () => {
-  emit('sort-name-dec', participant)
+  props.participantService.sortParticipantsByNameDec()
 }
 
 const sortNameInc = () => {
-  emit('sort-name-inc', participant)
+  props.participantService.sortParticipantsByNameInc()
 }
 
 const sortDateBirthdec = () => {
-  emit('sort-date-birth-dec', participant)
+  props.participantService.sortParticipantsByDateBirthDec()
 }
 
 const sortDateBirthInc = () => {
-  emit('sort-date-birth-inc', participant)
+  props.participantService.sortParticipantsByDateBirthInc()
 }
 </script>
 

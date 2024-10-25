@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import type { PropType } from 'vue'
-import type { Participant } from './RegistrationForm.vue'
+import type { Participant } from '../ParticipantInterface'
 import UButton from './UButton.vue'
 
 const props = defineProps({

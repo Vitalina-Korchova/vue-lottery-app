@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { reactive, ref, defineEmits } from 'vue'
+import { reactive, ref } from 'vue'
 import UButton from './UButton.vue'
 import UInput from './UInput.vue'
+import { type Participant } from '../ParticipantInterface'
+import ParticipantService from '../ParticipantService'
 
-export interface Participant {
-  id: number
-  name: string
-  dateBirth: string
-  email: string
-  phoneNumber: string
-}
+const props = defineProps<{
+  participantService: ParticipantService
+}>()
 
+// локальний реактивний об'єкт для форми
 const participant = reactive<Participant>({
   id: 0,
   name: '',
@@ -19,19 +18,12 @@ const participant = reactive<Participant>({
   phoneNumber: ''
 })
 
-const propsParticipants = defineProps<{ participants: Participant[] }>()
-
 const errors = reactive<{ [key: string]: string }>({
   name: '',
   dateBirth: '',
   email: '',
   phoneNumber: ''
 })
-
-// Використовую defineEmits для визначення події
-const emit = defineEmits(['add-participant'])
-
-const participantIdCounter = ref(1)
 
 const validateAllFields = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -53,7 +45,9 @@ const validateAllFields = () => {
     errors.email = 'Email is required!'
   } else if (!emailRegex.test(participant.email)) {
     errors.email = 'Invalid email format!'
-  } else if (propsParticipants.participants.some((p) => p.email === participant.email)) {
+  } else if (
+    props.participantService.getAllParticipants().value.some((p) => p.email === participant.email)
+  ) {
     errors.email = 'This email already exists!'
   } else {
     errors.email = ''
@@ -73,20 +67,18 @@ const validateAllFields = () => {
 const saveParticipant = (event: Event) => {
   event.preventDefault()
 
-  // Валідація
   if (!validateAllFields()) {
     return
   }
 
-  const newParticipant = { ...participant, id: participantIdCounter.value++ }
+  props.participantService.addParticipant({ ...participant })
 
-  // Очищуємо поля форми
-  Object.keys(participant).forEach((key) => {
-    ;(participant as any)[key] = ''
-  })
-
-  // Викликаємо подію, передаючи нового учасника
-  emit('add-participant', newParticipant)
+  // Очищення форми
+  participant.name = ''
+  participant.dateBirth = ''
+  participant.email = ''
+  participant.phoneNumber = ''
+  participant.id = 0
 }
 </script>
 
