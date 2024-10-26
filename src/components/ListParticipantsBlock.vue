@@ -8,6 +8,8 @@ import UInput from './UInput.vue'
 import { ref, reactive } from 'vue'
 import SearchBar from './SearchBar.vue'
 import type ParticipantService from '../ParticipantService'
+import { useForm, useField } from 'vee-validate'
+import { useParticipantForm } from '../Validation'
 
 const props = defineProps({
   participants: {
@@ -20,27 +22,24 @@ const props = defineProps({
   }
 })
 
-const errors = reactive<{ [key: string]: string }>({
-  name: '',
-  dateBirth: '',
-  email: '',
-  phoneNumber: ''
-})
-
-const participant = reactive<Participant>({
-  id: 0,
-  name: '',
-  dateBirth: '',
-  email: '',
-  phoneNumber: ''
-})
-
 //для відкриття модального вікна
 const selectedParticipantId = ref<number | null>(null)
 const isRemoveModalVisible = ref(false)
 const isUpdateModalVisible = ref(false)
 const selectedParticipantName = ref<string>('')
 const originalEmail = ref<string>('')
+
+//для валідації
+const { schema } = useParticipantForm(props.participantService)
+const { handleSubmit } = useForm({
+  validationSchema: schema
+})
+
+const { value: name, errorMessage: nameError } = useField<string>('name')
+const { value: dateBirth, errorMessage: dateBirthError } = useField<string>('dateBirth')
+const { value: email, errorMessage: emailError } = useField<string>('email')
+const { value: phoneNumber, errorMessage: phoneNumberError } = useField<string>('phoneNumber')
+/////
 
 const openRemoveModal = (participantId: number) => {
   const participantToRemove = props.participants.find((p) => p.id === participantId)
@@ -54,8 +53,13 @@ const openRemoveModal = (participantId: number) => {
 const openUpdateModal = (participantId: number) => {
   const participantToUpdate = props.participants.find((p) => p.id === participantId)
   if (participantToUpdate) {
-    Object.assign(participant, participantToUpdate)
-    originalEmail.value = participant.email
+    name.value = participantToUpdate.name
+    dateBirth.value = participantToUpdate.dateBirth
+    email.value = participantToUpdate.email
+    phoneNumber.value = participantToUpdate.phoneNumber
+
+    // Зберігаю оригінальний email
+    originalEmail.value = participantToUpdate.email
   }
   selectedParticipantId.value = participantId
   isUpdateModalVisible.value = true
@@ -75,52 +79,18 @@ const closeModal = () => {
   isUpdateModalVisible.value = false
 }
 
-const validateAllFields = () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const phoneRegex = /^0\d{9}$/
-  const today = new Date()
-
-  errors.name = participant.name.trim() ? '' : 'Name is required!'
-
-  const birthDate = new Date(participant.dateBirth)
-  if (!participant.dateBirth.trim()) {
-    errors.dateBirth = 'Date of Birth is required!'
-  } else if (birthDate > today) {
-    errors.dateBirth = 'Date of Birth cannot be in the future!'
-  } else {
-    errors.dateBirth = ''
+const UpdateParticipant = handleSubmit((values) => {
+  const participant: Participant = {
+    id: selectedParticipantId.value!,
+    name: values.name,
+    dateBirth: values.dateBirth,
+    email: values.email,
+    phoneNumber: values.phoneNumber
   }
 
-  if (!participant.email.trim()) {
-    errors.email = 'Email is required!'
-  } else if (!emailRegex.test(participant.email)) {
-    errors.email = 'Invalid email format!'
-  } else if (
-    participant.email !== originalEmail.value &&
-    props.participants.some((p) => p.email === participant.email)
-  ) {
-    errors.email = 'This email already exists!'
-  } else {
-    errors.email = ''
-  }
-
-  if (!participant.phoneNumber.trim()) {
-    errors.phoneNumber = 'Phone Number is required!'
-  } else if (!phoneRegex.test(participant.phoneNumber)) {
-    errors.phoneNumber = 'Invalid phone number format!'
-  } else {
-    errors.phoneNumber = ''
-  }
-
-  return !(errors.name || errors.dateBirth || errors.email || errors.phoneNumber)
-}
-
-const UpdateParticipant = () => {
-  if (validateAllFields()) {
-    props.participantService.updateParticipant(participant)
-    closeModal()
-  }
-}
+  props.participantService.updateParticipant(participant)
+  closeModal()
+})
 
 const filterByName = (name: string) => {
   props.participantService.searchParticipants(name)
@@ -197,38 +167,38 @@ const sortDateBirthInc = () => {
     >
       <template #modal-inputs>
         <UInput
-          v-model="participant.name"
+          v-model="name"
           :id="'name'"
           :type="'text'"
           :placeholder="'Enter user name'"
           :className="'form-control'"
-          :error="errors.name"
+          :error="nameError"
           :label="'Name'"
         />
         <UInput
-          v-model="participant.dateBirth"
+          v-model="dateBirth"
           :id="'dateBirth'"
           :type="'date'"
           :className="'form-control'"
-          :error="errors.dateBirth"
+          :error="dateBirthError"
           :label="'Date of Birth'"
         />
         <UInput
-          v-model="participant.email"
+          v-model="email"
           :id="'email'"
           :type="'email'"
           :className="'form-control'"
           :placeholder="'Enter email'"
-          :error="errors.email"
+          :error="emailError"
           :label="'Email'"
         />
         <UInput
-          v-model="participant.phoneNumber"
+          v-model="phoneNumber"
           :id="'phoneNumber'"
           :type="'tel'"
           :className="'form-control'"
           :placeholder="'Enter phone number'"
-          :error="errors.phoneNumber"
+          :error="phoneNumberError"
           :label="'Phone Number'"
         />
       </template>

@@ -55,10 +55,8 @@ class ParticipantService {
 
   public addParticipant(newParticipant: Participant) {
     const maxId = Math.max(0, ...this.participants.value.map((p) => p.id))
-    const participantWithId = { ...newParticipant, id: maxId + 1 }
-    this.participants.value = [...this.participants.value, participantWithId]
-    this.resetDisplay()
-    return participantWithId
+    newParticipant.id = maxId + 1
+    this.participants.value.push(newParticipant)
   }
 
   public removeParticipant(id: number) {

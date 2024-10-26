@@ -3,7 +3,7 @@ import { defineProps, computed } from 'vue'
 
 const props = defineProps<{
   label?: string
-  modelValue: string // пропс для v-model
+  modelValue?: string // пропс для v-model
   id: string
   type?: string
   placeholder?: string

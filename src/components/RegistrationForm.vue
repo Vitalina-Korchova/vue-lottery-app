@@ -4,82 +4,38 @@ import UButton from './UButton.vue'
 import UInput from './UInput.vue'
 import { type Participant } from '../ParticipantInterface'
 import ParticipantService from '../ParticipantService'
+import { useForm, useField } from 'vee-validate'
+import { useParticipantForm } from '../Validation'
 
 const props = defineProps<{
   participantService: ParticipantService
 }>()
 
-// локальний реактивний об'єкт для форми
-const participant = reactive<Participant>({
-  id: 0,
-  name: '',
-  dateBirth: '',
-  email: '',
-  phoneNumber: ''
+const { schema } = useParticipantForm(props.participantService)
+
+// використання useForm з схемою валідації
+const { handleSubmit, resetForm } = useForm({
+  validationSchema: schema
 })
 
-const errors = reactive<{ [key: string]: string }>({
-  name: '',
-  dateBirth: '',
-  email: '',
-  phoneNumber: ''
+// використання useField для кожного поля
+const { value: name, errorMessage: nameError } = useField<string>('name')
+const { value: dateBirth, errorMessage: dateBirthError } = useField<string>('dateBirth')
+const { value: email, errorMessage: emailError } = useField<string>('email')
+const { value: phoneNumber, errorMessage: phoneNumberError } = useField<string>('phoneNumber')
+
+const saveParticipant = handleSubmit((values) => {
+  const participant: Participant = {
+    id: 0,
+    name: values.name,
+    dateBirth: values.dateBirth,
+    email: values.email,
+    phoneNumber: values.phoneNumber
+  }
+
+  props.participantService.addParticipant(participant)
+  resetForm()
 })
-
-const validateAllFields = () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const phoneRegex = /^0\d{9}$/
-  const today = new Date()
-
-  errors.name = participant.name.trim() ? '' : 'Name is required!'
-
-  const birthDate = new Date(participant.dateBirth)
-  if (!participant.dateBirth.trim()) {
-    errors.dateBirth = 'Date of Birth is required!'
-  } else if (birthDate > today) {
-    errors.dateBirth = 'Date of Birth cannot be in the future!'
-  } else {
-    errors.dateBirth = ''
-  }
-
-  if (!participant.email.trim()) {
-    errors.email = 'Email is required!'
-  } else if (!emailRegex.test(participant.email)) {
-    errors.email = 'Invalid email format!'
-  } else if (
-    props.participantService.getAllParticipants().value.some((p) => p.email === participant.email)
-  ) {
-    errors.email = 'This email already exists!'
-  } else {
-    errors.email = ''
-  }
-
-  if (!participant.phoneNumber.trim()) {
-    errors.phoneNumber = 'Phone Number is required!'
-  } else if (!phoneRegex.test(participant.phoneNumber)) {
-    errors.phoneNumber = 'Invalid phone number format!'
-  } else {
-    errors.phoneNumber = ''
-  }
-
-  return !(errors.name || errors.dateBirth || errors.email || errors.phoneNumber)
-}
-
-const saveParticipant = (event: Event) => {
-  event.preventDefault()
-
-  if (!validateAllFields()) {
-    return
-  }
-
-  props.participantService.addParticipant({ ...participant })
-
-  // Очищення форми
-  participant.name = ''
-  participant.dateBirth = ''
-  participant.email = ''
-  participant.phoneNumber = ''
-  participant.id = 0
-}
 </script>
 
 <template>
@@ -90,45 +46,45 @@ const saveParticipant = (event: Event) => {
 
       <!-- Поле для імені з валідацією -->
       <UInput
-        v-model="participant.name"
+        v-model="name"
         :id="'name'"
         :type="'text'"
         :placeholder="'Enter user name'"
         :className="'form-control'"
-        :error="errors.name"
+        :error="nameError"
         :label="'Name'"
       />
 
       <!-- Поле для дати народження -->
       <UInput
-        v-model="participant.dateBirth"
+        v-model="dateBirth"
         :id="'dateBirth'"
         :type="'date'"
         :className="'form-control'"
-        :error="errors.dateBirth"
+        :error="dateBirthError"
         :label="'Date of Birth'"
       />
 
       <!-- Поле для email -->
 
       <UInput
-        v-model="participant.email"
+        v-model="email"
         :id="'email'"
         :type="'email'"
         :className="'form-control'"
         :placeholder="'Enter email'"
-        :error="errors.email"
+        :error="emailError"
         :label="'Email'"
       />
 
       <!-- Поле для телефону -->
       <UInput
-        v-model="participant.phoneNumber"
+        v-model="phoneNumber"
         :id="'phoneNumber'"
         :type="'tel'"
         :className="'form-control'"
         :placeholder="'Enter phone number'"
-        :error="errors.phoneNumber"
+        :error="phoneNumberError"
         :label="'Phone Number'"
       />
 
