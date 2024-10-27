@@ -30,14 +30,14 @@ const selectedParticipantName = ref<string>('')
 const originalEmail = ref<string>('')
 
 //для валідації
-const { schema } = useParticipantForm(props.participantService)
+const { schema } = useParticipantForm(props.participantService, true)
 const { handleSubmit } = useForm({
   validationSchema: schema
 })
 
 const { value: avatar, errorMessage: avatarError } = useField<string>('avatar')
 const { value: name, errorMessage: nameError } = useField<string>('name')
-const { value: email, errorMessage: emailError } = useField<string>('email')
+// const { value: email, errorMessage: emailError } = useField<string>('email')
 const { value: password, errorMessage: passwordError } = useField<string>('password')
 /////
 
@@ -55,7 +55,7 @@ const openUpdateModal = (participantId: number) => {
   if (participantToUpdate) {
     avatar.value = participantToUpdate.avatar
     name.value = participantToUpdate.name
-    email.value = participantToUpdate.email
+    // email.value = participantToUpdate.email
     password.value = participantToUpdate.password
 
     // Зберігаю оригінальний email
@@ -174,7 +174,7 @@ const addUserFromApi = () => {
           :label="'Name'"
         />
 
-        <UInput
+        <!-- <UInput
           v-model="email"
           :id="'email'"
           :type="'email'"
@@ -182,7 +182,7 @@ const addUserFromApi = () => {
           :placeholder="'Enter email'"
           :error="emailError"
           :label="'Email'"
-        />
+        /> -->
         <UInput
           v-model="password"
           :id="'password'"

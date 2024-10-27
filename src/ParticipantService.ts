@@ -64,7 +64,13 @@ class ParticipantService {
   public updateParticipant(updatedParticipant: Participant) {
     const index = this.participants.value.findIndex((p) => p.id === updatedParticipant.id)
     if (index !== -1) {
-      this.participants.value[index] = { ...this.participants.value[index], ...updatedParticipant }
+      const currentParticipant = this.participants.value[index]
+
+      this.participants.value[index] = {
+        ...currentParticipant,
+        ...updatedParticipant,
+        email: currentParticipant.email
+      }
     }
   }
 

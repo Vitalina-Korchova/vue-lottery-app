@@ -11,7 +11,7 @@ const props = defineProps<{
   participantService: ParticipantService
 }>()
 
-const { schema } = useParticipantForm(props.participantService)
+const { schema } = useParticipantForm(props.participantService, false)
 
 // використання useForm з схемою валідації
 const { handleSubmit, resetForm } = useForm({
