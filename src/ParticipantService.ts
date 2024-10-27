@@ -4,9 +4,7 @@ import type { Participant } from './ParticipantInterface'
 class ParticipantService {
   private participants = ref<Participant[]>([])
   private searchTerm = ref('')
-  private currentSortType = ref<'none' | 'nameDec' | 'nameInc' | 'dateBirthDec' | 'dateBirthInc'>(
-    'none'
-  )
+  private currentSortType = ref<'none' | 'nameDec' | 'nameInc'>('none')
   private displayedParticipants = ref<Participant[]>([])
 
   constructor() {
@@ -31,10 +29,10 @@ class ParticipantService {
 
   private emptyParticipant = ref<Participant>({
     id: 0,
+    avatar: '',
     name: '',
-    dateBirth: '',
     email: '',
-    phoneNumber: ''
+    password: ''
   })
 
   private saveToStorage() {
@@ -98,28 +96,6 @@ class ParticipantService {
     if (this.currentSortType.value !== 'nameInc') {
       this.displayedParticipants.value.sort((a, b) => b.name.localeCompare(a.name))
       this.currentSortType.value = 'nameInc'
-    } else {
-      this.resetDisplay()
-    }
-  }
-
-  public sortParticipantsByDateBirthDec() {
-    if (this.currentSortType.value !== 'dateBirthDec') {
-      this.displayedParticipants.value.sort(
-        (a, b) => new Date(b.dateBirth).getTime() - new Date(a.dateBirth).getTime()
-      )
-      this.currentSortType.value = 'dateBirthDec'
-    } else {
-      this.resetDisplay()
-    }
-  }
-
-  public sortParticipantsByDateBirthInc() {
-    if (this.currentSortType.value !== 'dateBirthInc') {
-      this.displayedParticipants.value.sort(
-        (a, b) => new Date(a.dateBirth).getTime() - new Date(b.dateBirth).getTime()
-      )
-      this.currentSortType.value = 'dateBirthInc'
     } else {
       this.resetDisplay()
     }

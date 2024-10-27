@@ -35,10 +35,10 @@ const { handleSubmit } = useForm({
   validationSchema: schema
 })
 
+const { value: avatar, errorMessage: avatarError } = useField<string>('avatar')
 const { value: name, errorMessage: nameError } = useField<string>('name')
-const { value: dateBirth, errorMessage: dateBirthError } = useField<string>('dateBirth')
 const { value: email, errorMessage: emailError } = useField<string>('email')
-const { value: phoneNumber, errorMessage: phoneNumberError } = useField<string>('phoneNumber')
+const { value: password, errorMessage: passwordError } = useField<string>('password')
 /////
 
 const openRemoveModal = (participantId: number) => {
@@ -53,10 +53,10 @@ const openRemoveModal = (participantId: number) => {
 const openUpdateModal = (participantId: number) => {
   const participantToUpdate = props.participants.find((p) => p.id === participantId)
   if (participantToUpdate) {
+    avatar.value = participantToUpdate.avatar
     name.value = participantToUpdate.name
-    dateBirth.value = participantToUpdate.dateBirth
     email.value = participantToUpdate.email
-    phoneNumber.value = participantToUpdate.phoneNumber
+    password.value = participantToUpdate.password
 
     // Зберігаю оригінальний email
     originalEmail.value = participantToUpdate.email
@@ -82,10 +82,10 @@ const closeModal = () => {
 const UpdateParticipant = handleSubmit((values) => {
   const participant: Participant = {
     id: selectedParticipantId.value!,
+    avatar: values.avatar,
     name: values.name,
-    dateBirth: values.dateBirth,
     email: values.email,
-    phoneNumber: values.phoneNumber
+    password: values.password
   }
 
   props.participantService.updateParticipant(participant)
@@ -103,14 +103,6 @@ const sortNameDec = () => {
 const sortNameInc = () => {
   props.participantService.sortParticipantsByNameInc()
 }
-
-const sortDateBirthdec = () => {
-  props.participantService.sortParticipantsByDateBirthDec()
-}
-
-const sortDateBirthInc = () => {
-  props.participantService.sortParticipantsByDateBirthInc()
-}
 </script>
 
 <template>
@@ -120,16 +112,8 @@ const sortDateBirthInc = () => {
     <UButton id="sortDec" customClass="btn-primary" icon="sortNameDec" @click="sortNameDec" />
     <UButton customClass="btn-primary" icon="sortNameInc" @click="sortNameInc" />
     <br />
-    <label id="labelSort" class="fs-5 fw-bold">Сортування за датою народження</label>
-    <UButton
-      id="sortDec"
-      customClass="btn-primary"
-      icon="sortDateBirthDec"
-      @click="sortDateBirthdec"
-    />
-    <UButton customClass="btn-primary" icon="sortDateBirthInc" @click="sortDateBirthInc" />
     <UTable
-      :columns="['ID', 'Name', 'Date of Birth', 'Email', 'Phone Number', 'Update', 'Remove']"
+      :columns="['ID', 'Avatar', 'Name', 'Email', 'Password', 'Update', 'Remove']"
       :rows="participants"
     >
       <template #update-button="{ row }">
@@ -167,6 +151,14 @@ const sortDateBirthInc = () => {
     >
       <template #modal-inputs>
         <UInput
+          v-model="avatar"
+          :id="'avatar'"
+          :type="'text'"
+          :className="'form-control'"
+          :error="avatarError"
+          :label="'Avatar'"
+        />
+        <UInput
           v-model="name"
           :id="'name'"
           :type="'text'"
@@ -175,14 +167,7 @@ const sortDateBirthInc = () => {
           :error="nameError"
           :label="'Name'"
         />
-        <UInput
-          v-model="dateBirth"
-          :id="'dateBirth'"
-          :type="'date'"
-          :className="'form-control'"
-          :error="dateBirthError"
-          :label="'Date of Birth'"
-        />
+
         <UInput
           v-model="email"
           :id="'email'"
@@ -193,13 +178,13 @@ const sortDateBirthInc = () => {
           :label="'Email'"
         />
         <UInput
-          v-model="phoneNumber"
-          :id="'phoneNumber'"
-          :type="'tel'"
+          v-model="password"
+          :id="'password'"
+          :type="'text'"
+          :placeholder="'Enter user password'"
           :className="'form-control'"
-          :placeholder="'Enter phone number'"
-          :error="phoneNumberError"
-          :label="'Phone Number'"
+          :error="passwordError"
+          :label="'Password'"
         />
       </template>
     </UModal>

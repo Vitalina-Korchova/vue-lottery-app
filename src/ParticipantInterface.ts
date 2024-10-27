@@ -1,7 +1,7 @@
 export interface Participant {
   id: number
+  avatar: string
   name: string
-  dateBirth: string
   email: string
-  phoneNumber: string
+  password: string
 }

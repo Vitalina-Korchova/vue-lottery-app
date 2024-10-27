@@ -19,18 +19,18 @@ const { handleSubmit, resetForm } = useForm({
 })
 
 // використання useField для кожного поля
+const { value: avatar, errorMessage: avatarError } = useField<string>('avatar')
 const { value: name, errorMessage: nameError } = useField<string>('name')
-const { value: dateBirth, errorMessage: dateBirthError } = useField<string>('dateBirth')
 const { value: email, errorMessage: emailError } = useField<string>('email')
-const { value: phoneNumber, errorMessage: phoneNumberError } = useField<string>('phoneNumber')
+const { value: password, errorMessage: passwordError } = useField<string>('password')
 
 const saveParticipant = handleSubmit((values) => {
   const participant: Participant = {
     id: 0,
+    avatar: values.avatar,
     name: values.name,
-    dateBirth: values.dateBirth,
     email: values.email,
-    phoneNumber: values.phoneNumber
+    password: values.password
   }
 
   props.participantService.addParticipant(participant)
@@ -44,7 +44,17 @@ const saveParticipant = handleSubmit((values) => {
       <span class="fw-bold">REGISTER FORM</span>
       <span class="text-black-50 bg-white fs-6 pb-3">Please fill in all the fields.</span>
 
-      <!-- Поле для імені з валідацією -->
+      <!-- Поле для аватару -->
+      <UInput
+        v-model="avatar"
+        :id="'avatar'"
+        :type="'text'"
+        :className="'form-control'"
+        :error="avatarError"
+        :label="'Avatar'"
+      />
+
+      <!-- Поле для імені -->
       <UInput
         v-model="name"
         :id="'name'"
@@ -53,16 +63,6 @@ const saveParticipant = handleSubmit((values) => {
         :className="'form-control'"
         :error="nameError"
         :label="'Name'"
-      />
-
-      <!-- Поле для дати народження -->
-      <UInput
-        v-model="dateBirth"
-        :id="'dateBirth'"
-        :type="'date'"
-        :className="'form-control'"
-        :error="dateBirthError"
-        :label="'Date of Birth'"
       />
 
       <!-- Поле для email -->
@@ -77,15 +77,14 @@ const saveParticipant = handleSubmit((values) => {
         :label="'Email'"
       />
 
-      <!-- Поле для телефону -->
       <UInput
-        v-model="phoneNumber"
-        :id="'phoneNumber'"
-        :type="'tel'"
+        v-model="password"
+        :id="'password'"
+        :type="'text'"
         :className="'form-control'"
-        :placeholder="'Enter phone number'"
-        :error="phoneNumberError"
-        :label="'Phone Number'"
+        :placeholder="'Enter password'"
+        :error="passwordError"
+        :label="'Password'"
       />
 
       <UButton label="Save" @click="saveParticipant" id="btnSave" customClass="align-self-end" />
