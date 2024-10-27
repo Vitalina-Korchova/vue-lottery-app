@@ -8,13 +8,7 @@ export const createParticipantSchema = (participantService: ParticipantService) 
       .date()
       .required('Date of Birth is required!')
       .max(new Date(), 'Date of Birth cannot be in the future!'),
-    email: yup
-      .string()
-      .required('Email is required!')
-      .email('Invalid email format!')
-      .test('unique-email', 'This email already exists!', (value) => {
-        return !participantService.getAllParticipants().value.some((p) => p.email === value)
-      }),
+    email: yup.string().required('Email is required!').email('Invalid email format!'),
     phoneNumber: yup
       .string()
       .required('Phone Number is required!')
