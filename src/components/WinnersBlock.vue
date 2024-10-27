@@ -99,7 +99,7 @@ const removeWinner = (index: number) => {
   color: white;
   cursor: pointer;
   position: absolute;
-  top: 80px;
+  top: 144px;
   font-weight: bold;
   padding-left: 6px;
 }

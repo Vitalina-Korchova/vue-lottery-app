@@ -100,6 +100,33 @@ class ParticipantService {
       this.resetDisplay()
     }
   }
+
+  public async fetchAndStoreUsersFromApi() {
+    try {
+      const response = await fetch('https://api.escuelajs.co/api/v1/users?limit=3')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      const fetchedUsers: Participant[] = data.map((user: any) => ({
+        id: 0,
+        avatar: user.avatar,
+        name: user.name,
+        email: user.email,
+        password: user.password
+      }))
+      fetchedUsers.forEach((user) => {
+        const exists = this.participants.value.some(
+          (participant) => participant.email === user.email
+        )
+        if (!exists) {
+          this.addParticipant(user)
+        }
+      })
+    } catch (er) {
+      console.error('Error fetching users from API', er)
+    }
+  }
 }
 
 export default ParticipantService

@@ -49,6 +49,7 @@ const saveParticipant = handleSubmit((values) => {
         v-model="avatar"
         :id="'avatar'"
         :type="'text'"
+        :placeholder="'Enter avatar URL'"
         :className="'form-control'"
         :error="avatarError"
         :label="'Avatar'"

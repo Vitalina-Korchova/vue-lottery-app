@@ -103,6 +103,10 @@ const sortNameDec = () => {
 const sortNameInc = () => {
   props.participantService.sortParticipantsByNameInc()
 }
+
+const addUserFromApi = () => {
+  props.participantService.fetchAndStoreUsersFromApi()
+}
 </script>
 
 <template>
@@ -112,6 +116,7 @@ const sortNameInc = () => {
     <UButton id="sortDec" customClass="btn-primary" icon="sortNameDec" @click="sortNameDec" />
     <UButton customClass="btn-primary" icon="sortNameInc" @click="sortNameInc" />
     <br />
+    <UButton label="Add Users From API" customClass="btn-primary" @click="addUserFromApi" />
     <UTable
       :columns="['ID', 'Avatar', 'Name', 'Email', 'Password', 'Update', 'Remove']"
       :rows="participants"
@@ -154,6 +159,7 @@ const sortNameInc = () => {
           v-model="avatar"
           :id="'avatar'"
           :type="'text'"
+          :placeholder="'Enter avatar URL'"
           :className="'form-control'"
           :error="avatarError"
           :label="'Avatar'"

@@ -6,7 +6,7 @@ const props = defineProps<{
   id?: string
   customClass?: string
   disabled?: boolean
-  icon?: 'sortNameDec' | 'sortNameInc' | 'sortDateBirthDec' | 'sortDateBirthInc'
+  icon?: 'sortNameDec' | 'sortNameInc'
 }>()
 
 const emit = defineEmits(['click'])
