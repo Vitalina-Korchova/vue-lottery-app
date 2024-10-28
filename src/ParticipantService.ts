@@ -177,6 +177,29 @@ class ParticipantService {
     return this._isLoggedIn.value
   }
 
+  public async GetDataFromID(id: number): Promise<Participant | null> {
+    try {
+      const response = await fetch(`https://api.escuelajs.co/api/v1/users/${id}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const userData = await response.json()
+      const participant: Participant = {
+        id: userData.id,
+        avatar: userData.avatar,
+        name: userData.name,
+        email: userData.email,
+        password: userData.password
+      }
+
+      return participant
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+      return null
+    }
+  }
+
   // public addParticipant(newParticipant: Participant) {
   //   const maxId = Math.max(0, ...this.participants.value.map((p) => p.id))
   //   newParticipant.id = maxId + 1
