@@ -6,6 +6,7 @@ import ParticipantService from '../ParticipantService'
 
 const participantService = new ParticipantService()
 const participants = participantService.getAllParticipants()
+console.log(participants)
 const filteredParticipants = participantService.filteredParticipants()
 </script>
 

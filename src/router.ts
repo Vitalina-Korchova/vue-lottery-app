@@ -3,6 +3,7 @@ import HomePage from './components/HomePage.vue'
 import AboutPage from './components/AboutPage.vue'
 import LotteryPage from './components/LotteryPage.vue'
 import LoginPage from './components/LoginPage.vue'
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [

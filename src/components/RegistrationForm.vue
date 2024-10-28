@@ -33,7 +33,7 @@ const saveParticipant = handleSubmit((values) => {
     password: values.password
   }
 
-  props.participantService.addParticipant(participant)
+  props.participantService.createUserViaApi(participant)
   resetForm()
 })
 </script>
