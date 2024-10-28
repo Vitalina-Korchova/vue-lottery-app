@@ -1,12 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
 
 <template>
   <div id="navigation">
     <ul class="d-flex justify-content-between align-items-center">
-      <li><a class="text-dark-emphasis px-3 fw-bolder" href="">Home</a></li>
-      <li><a class="text-dark-emphasis px-3 fw-bolder" href="">About</a></li>
-      <li><a class="text-dark-emphasis px-3 fw-bolder" href="">Lottery</a></li>
-      <li><a class="text-dark-emphasis px-3 fw-bolder" href="">Login</a></li>
+      <li>
+        <RouterLink id="nav-link" class="text-dark-emphasis px-3 fw-bolder" to="/">Home</RouterLink>
+      </li>
+      <li>
+        <RouterLink id="nav-link" class="text-dark-emphasis px-3 fw-bolder" to="/about"
+          >About</RouterLink
+        >
+      </li>
+      <li>
+        <RouterLink id="nav-link" class="text-dark-emphasis px-3 fw-bolder" to="/lottery"
+          >Lottery</RouterLink
+        >
+      </li>
+      <li>
+        <RouterLink id="nav-link" class="text-dark-emphasis px-3 fw-bolder" to="/login"
+          >Login</RouterLink
+        >
+      </li>
     </ul>
   </div>
 </template>
@@ -19,10 +35,10 @@ ul {
   list-style-type: none;
   margin: auto;
 }
-a {
+#nav-link {
   text-decoration: none;
 }
-a:hover {
+#nav-link:hover {
   text-shadow: 2px 0px 4px rgba(159, 159, 159, 0.7);
 }
 </style>
