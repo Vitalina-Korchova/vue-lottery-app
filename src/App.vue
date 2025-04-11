@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import AppHeader from './components/AppHeader.vue'
-import { RouterView } from 'vue-router'
+import LotteryPage from './components/LotteryPage.vue'
 </script>
 
 <template>
-  <AppHeader />
-  <RouterView />
+  <LotteryPage />
 </template>
 
 <style scoped>
